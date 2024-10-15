@@ -1,12 +1,15 @@
-export function formatCpfCnpj (cellValue) {
-  let result = cellValue
-  if (cellValue !== null && cellValue !== undefined) {
-    result = `${cellValue}`
+export function formatCpfCnpj (cellValue, cpf = true, cnpj = true) {
+  let result = cellValue.replace(/\D/g, '')
 
-    if (cellValue.length === 11) {
-      result = result.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4')
-    } else if (cellValue.length <= 14) {
-      result = result.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5')
+  if (result !== null && result !== undefined) {
+    result = `${result}`
+
+    if (cpf && result.length === 11) {
+      return result.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/g, '$1.$2.$3-$4')
+    }
+
+    if (cnpj && result.length <= 14) {
+      return result.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5')
     }
   }
 

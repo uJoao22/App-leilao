@@ -39,7 +39,7 @@
                 :maxlength="18"
                 required
                 @input="applyCnpjMask"
-                @keypress="onlyNumbers"
+                @keypress="formOnlyNumbers"
               />
             </v-col>
 
@@ -52,7 +52,7 @@
                 :counter="15"
                 :maxlength="15"
                 @input="applyPhoneMask"
-                @keypress="onlyNumbers"
+                @keypress="formOnlyNumbers"
               />
             </v-col>
 
@@ -107,75 +107,12 @@
               <v-divider/>
             </v-col>
 
-            <span class="text-h5 mb-3 col-12">
-              Endereço
-            </span>
-
-            <!-- CEP -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="item.endereco.cep"
-                :rules="rules.endereco.cep"
-                label="CEP"
-                :counter="9"
-                :maxlength="9"
-                @input="applyCepMask"
-                @keypress="onlyNumbers"
-              />
-            </v-col>
-
-            <!-- Município -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="item.endereco.municipio"
-                :rules="rules.endereco.municipio"
-                label="Município"
-                :counter="64"
-                :maxlength="64"
-              />
-            </v-col>
-
-            <!-- Bairro -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="item.endereco.bairro"
-                :rules="rules.endereco.bairro"
-                label="Bairro"
-                :counter="64"
-                :maxlength="64"
-              />
-            </v-col>
-
-            <!-- Logradouro -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="item.endereco.logradouro"
-                :rules="rules.endereco.logradouro"
-                label="Logradouro"
-                :counter="64"
-                :maxlength="64"
-              />
-            </v-col>
-
-            <!-- Número -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="item.endereco.numero"
-                :rules="rules.endereco.numero"
-                label="Número"
-                :counter="10"
-                :maxlength="10"
-              />
-            </v-col>
-
-            <!-- Complemento -->
-            <v-col cols="12" md="6">
-              <v-text-field
-                v-model="item.endereco.complemento"
-                :rules="rules.endereco.complemento"
-                label="Complemento"
-                :counter="64"
-                :maxlength="64"
+            <v-col cols="12">
+              <FormEmpresaEndereco
+                ref="FormEmpresaEndereco"
+                :item="item"
+                :rules="rules"
+                @applyCepMask="applyCepMask"
               />
             </v-col>
 
@@ -206,11 +143,20 @@
 </template>
 
 <script>
+import { formatCpfCnpj, formatPhone, formatCep, formOnlyNumbers } from '@/util'
+import FormEmpresaEndereco from './FormEmpresaEndereco'
+import MODEL from './model'
+
 export default {
   name: 'FormItem',
 
+  components: {
+    FormEmpresaEndereco
+  },
+
   data () {
     return {
+      formOnlyNumbers,
       dialog: false,
       valid: false,
       item: this.resetItem()
@@ -285,29 +231,7 @@ export default {
 
   methods: {
     resetItem () {
-      return {
-        id: null,
-        razaoSocial: '',
-        cnpj: '',
-        endereco: {
-          id: null,
-          logradouro: '',
-          municipio: '',
-          numero: '',
-          complemento: '',
-          bairro: '',
-          cep: '',
-          createdAt: new Date(),
-          updatedAt: new Date()
-        },
-        telefone: '',
-        email: '',
-        site: '',
-        usuario: '',
-        senha: '',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
+      return {...MODEL}
     },
 
     addDialog () {
@@ -364,48 +288,15 @@ export default {
     },
 
     applyPhoneMask (value) {
-      const cleanValue = value.replace(/\D/g, '')
-      let maskedValue = ''
-
-      if (cleanValue.length <= 8) {
-        maskedValue = cleanValue.replace(/(\d{4})(\d{0,4})/, '$1-$2')
-      } else if (cleanValue.length <= 10) {
-        maskedValue = cleanValue.replace(/(\d{2})(\d{4})(\d{0,4})/, '($1) $2-$3')
-      } else if (cleanValue.length <= 11) {
-        maskedValue = cleanValue.replace(/(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3')
-      }
-
-      this.item.telefone = maskedValue
+      this.item.telefone = formatPhone(value)
     },
 
     applyCnpjMask (value) {
-      const cleanValue = value.replace(/\D/g, '')
-      let maskedValue = ''
-
-      if (cleanValue.length <= 14) {
-        maskedValue = cleanValue.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5')
-      }
-
-      this.item.cnpj = maskedValue
+      this.item.cnpj = formatCpfCnpj(value, false)
     },
 
     applyCepMask (value) {
-      const cleanValue = value.replace(/\D/g, '')
-      let maskedValue = ''
-
-      if (cleanValue.length <= 8) {
-        maskedValue = cleanValue.replace(/^(\d{5})(\d{3})/, '$1-$2')
-      }
-
-      this.item.endereco.cep = maskedValue
-    },
-
-    onlyNumbers (event) {
-      const charCode = event.charCode ? event.charCode : event.keyCode
-
-      if (charCode < 48 || charCode > 57) {
-        event.preventDefault()
-      }
+      this.item.endereco.cep = formatCep(value)
     }
   }
 }
