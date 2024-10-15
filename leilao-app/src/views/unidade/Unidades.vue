@@ -49,7 +49,7 @@ export default {
   methods: {
     async fetch () {
       this.list = await this.$http.get('unidades')
-        .then(response => response)
+        .then(response => response || [])
         .catch(() => [])
     },
 

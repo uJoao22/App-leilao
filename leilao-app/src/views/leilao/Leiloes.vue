@@ -39,7 +39,7 @@ export default {
   methods: {
     async fetch () {
       this.list = await this.$http.get('compradores')
-        .then(response => response)
+        .then(response => response || [])
         .catch(() => [])
     }
   }
