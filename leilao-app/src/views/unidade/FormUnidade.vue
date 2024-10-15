@@ -6,7 +6,7 @@
     <v-card>
       <v-card-title>
         <span class="text-h5 mb-3">
-          {{ isEdit ? 'Edição de empresa' : 'Criação de empresa' }}
+          {{ isEdit ? 'Edição de unidade' : 'Criação de unidade' }}
         </span>
       </v-card-title>
 
