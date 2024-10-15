@@ -1,6 +1,7 @@
 <template>
   <v-app id="app-leilao">
     <v-navigation-drawer
+      v-if="!isNotFound"
       id="navbar"
       v-model="drawer"
       app
@@ -11,7 +12,7 @@
     </v-navigation-drawer>
 
     <v-main class="main-content">
-      <v-container fluid class="d-flex">
+      <v-container fluid class="d-flex" :class="(isNotFound) ? 'remove-padding' : ''">
         <v-flex>
           <router-view></router-view>
           <Toast ref="Toast"/>
