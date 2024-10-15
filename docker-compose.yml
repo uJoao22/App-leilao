@@ -1,0 +1,13 @@
+services:
+  postgresql:
+    container_name: "postgresql"
+    image: "postgres:10.5-alpine"
+    ports:
+      - "5432:5432"
+    volumes:
+      - "postgresqldata:/var/lib/postgresql/data"
+      - "./leilao-api/src/main/resources/sql:/docker-entrypoint-initdb.d"
+    env_file:
+      - "variables.env"
+volumes:
+  postgresqldata: null
