@@ -1,7 +1,5 @@
 # App Leilão
 
-<hr>
-
 ### Configuração do Banco de dados
 - Na raiz do projeto se encontram os seguintes arquivos:
   - docker-compose.yml
